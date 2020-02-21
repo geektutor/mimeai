@@ -3,8 +3,11 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:mimeai/model/api.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
+
+String _disease = "di";
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -129,50 +132,61 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
-
   const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(title: Text('Display the Picture')),
+      appBar: AppBar(title: Text('Get Prediction')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
-    );
-  }
-}
+      /*body: Center(
+        child: RaisedButton(
+            onPressed: () {
 
-class SplashScreen extends StatefulWidget {
-
-  @override
-  State<StatefulWidget> createState() {
-    return SplashScreenState();
-  }
-}
-
-class SplashScreenState extends State<SplashScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/splash.jpg'),
-            fit: BoxFit.cover
-        ) ,
-      ),
-      child: Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+            },
+            child: Text('Go back')
         ),
-      ),
+      ),*/
+      body: Builder(builder: (_context) =>
+          Column(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                child: Image.file(File(imagePath)),
+              ),
+              Text('Disease:  $_disease'),
+              RaisedButton(
+                  onPressed: () async {
+                    try {
+                      ApiRequests apiRequests = new ApiRequests();
+
+                        if(await apiRequests.getPrediction(imagePath)) {
+                          _disease = "New Disease";
+                          _showMessage('Prediction is ready', _context);
+
+                        } else {
+                          _showMessage('Could not sign in.\n'
+                          'Is the Google Services file missing?', _context);
+                        }
+                    } on Exception catch (error) {
+                      print(error);
+                    }
+                  },
+                  child: Text('Request Prediction')
+              )
+            ],
+          ),
+      )
     );
   }
+}
+
+void _showMessage(String msg, BuildContext context) {
+  final SnackBar snackBar = SnackBar(
+    duration: Duration(seconds: 3),
+    content: Text(msg),
+  );
+  Scaffold.of(context).showSnackBar(snackBar);
 }
