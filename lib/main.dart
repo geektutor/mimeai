@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:mimeai/model/api.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
 
 String _disease = "di";
 
@@ -111,12 +113,18 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             // Attempt to take a picture and log where it's been saved.
             await _controller.takePicture(path);
+            // Load it from my filesystem
+            File imageFile = new File(path);
+
+            // Convert to amazon requirements
+            List imageBytes = imageFile.readAsBytesSync();
+            String base64Image = base64Encode(imageBytes);
 
             // If the picture was taken, display it on a new screen.
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(imagePath: path),
+                builder: (context) => DisplayPictureScreen(imagePath: path, base64Image: base64Image),
               ),
             );
           } catch (e) {
@@ -129,56 +137,64 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   }
 }
 
-// A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
 
+// A widget that displays the picture taken by the user.
+class DisplayPictureScreen extends StatefulWidget {
+  final String imagePath;
+  final String base64Image;
+  const DisplayPictureScreen({Key key, this.imagePath, this.base64Image}) : super(key: key);
+
+  @override
+  _DisplayPictureScreenState createState() => _DisplayPictureScreenState();
+}
+
+class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: Text('Get Prediction')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      /*body: Center(
+        appBar: AppBar(title: Text('Get Prediction')),
+        // The image is stored as a file on the device. Use the `Image.file`
+        // constructor with the given path to display the image.
+        /*body: Center(
         child: RaisedButton(
             onPressed: () {
-
             },
             child: Text('Go back')
         ),
       ),*/
-      body: Builder(builder: (_context) =>
-          Column(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                child: Image.file(File(imagePath)),
-              ),
-              Text('Disease:  $_disease'),
-              RaisedButton(
-                  onPressed: () async {
-                    try {
-                      ApiRequests apiRequests = new ApiRequests();
+        body: Builder(builder: (_context) =>
+            Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  child: Image.file(File(widget.imagePath)),
+                ),
+                Text('Disease:  $_disease'),
+                RaisedButton(
+                    onPressed: () async {
+                      try {
+                        ApiRequests apiRequests = new ApiRequests();
 
-                        if(await apiRequests.getPrediction(imagePath)) {
-                          _disease = "New Disease";
+                        if(await apiRequests.getPrediction(widget.imagePath, widget.base64Image)) {
+                          setState(() {
+                            _disease = "New Disease";
+                          });
                           _showMessage('Prediction is ready', _context);
 
                         } else {
                           _showMessage('Could not sign in.\n'
-                          'Is the Google Services file missing?', _context);
+                              'Is the Google Services file missing?', _context);
                         }
-                    } on Exception catch (error) {
-                      print(error);
-                    }
-                  },
-                  child: Text('Request Prediction')
-              )
-            ],
-          ),
-      )
+                      } on Exception catch (error) {
+                        print(error);
+                      }
+                    },
+                    child: Text('Request Prediction')
+                )
+              ],
+            ),
+        )
     );
   }
 }

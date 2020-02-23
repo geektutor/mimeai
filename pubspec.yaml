@@ -20,6 +20,8 @@ dependencies:
   flutter:
     sdk: flutter
   camera:
+  image_picker:
+  http: ^0.12.0+4
   path_provider:
   path:
 
