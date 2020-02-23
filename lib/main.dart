@@ -175,10 +175,11 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     onPressed: () async {
                       try {
                         ApiRequests apiRequests = new ApiRequests();
+                        final prediction = await apiRequests.getPrediction(widget.imagePath, widget.base64Image);
 
-                        if(await apiRequests.getPrediction(widget.imagePath, widget.base64Image)) {
+                        if(prediction['success']) {
                           setState(() {
-                            _disease = "New Disease";
+                            _disease = prediction['disease'];
                           });
                           _showMessage('Prediction is ready', _context);
 
