@@ -9,14 +9,12 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 
-String _disease = "di";
+String _disease = "";
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
 
   // Get a specific camera from the list of available cameras.
@@ -24,14 +22,60 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-      theme: ThemeData.dark(),
-      home: TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
-      ),
+        theme: ThemeData.dark(),
+        home: Scaffold(
+          appBar: AppBar(
+            title: Center(
+              child: Text('Mimeai'),
+            ),
+          ),
+          body: Container(
+            margin: EdgeInsets.only(top: 2),
+            child: HomeScreen(firstCamera: firstCamera,),
+          ),
+        )
     ),
   );
 }
+
+class HomeScreen extends StatelessWidget {
+  // Obtain a list of the available cameras on the device.
+  final firstCamera;
+  HomeScreen({Key key, @required this.firstCamera});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          Center(
+            child: RaisedButton(
+                child: Container(
+                  width: 120,
+                  child: Column(
+                    children: <Widget>[
+                      Text('Take picture'),
+                      Icon(Icons.camera)
+                    ],
+                  ),
+                ),
+                onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) =>  TakePictureScreen(
+                    // Pass the appropriate camera to the TakePictureScreen widget.
+                    camera: firstCamera,
+                  ),
+                ));
+            }),
+          )
+        ],
+      ),
+    );
+  }
+
+}
+
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
@@ -59,7 +103,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
-      ResolutionPreset.medium,
+      ResolutionPreset.ultraHigh,
     );
 
     // Next, initialize the controller. This returns a Future.
