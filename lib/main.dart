@@ -67,6 +67,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
+
                   var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
                   File imageFile = new File(image.path);
@@ -126,110 +127,6 @@ class HomeScreen extends StatelessWidget {
 }
 
 
-/*// A screen that allows users to take a picture using a given camera.
-class TakePictureScreen extends StatefulWidget {
-  final CameraDescription camera;
-
-  const TakePictureScreen({
-    Key key,
-    @required this.camera,
-  }) : super(key: key);
-
-  @override
-  TakePictureScreenState createState() => TakePictureScreenState();
-}
-
-class TakePictureScreenState extends State<TakePictureScreen> {
-  CameraController _controller;
-  Future<void> _initializeControllerFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    // To display the current output from the Camera,
-    // create a CameraController.
-    _controller = CameraController(
-      // Get a specific camera from the list of available cameras.
-      widget.camera,
-      // Define the resolution to use.
-      ResolutionPreset.ultraHigh,
-    );
-
-    // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
-  }
-
-  @override
-  void dispose() {
-    // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Take a picture')),
-      // Wait until the controller is initialized before displaying the
-      // camera preview. Use a FutureBuilder to display a loading spinner
-      // until the controller has finished initializing.
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
-          } else {
-            // Otherwise, display a loading indicator.
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
-        // Provide an onPressed callback.
-        onPressed: () async {
-          // Take the Picture in a try / catch block. If anything goes wrong,
-          // catch the error.
-          try {
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
-
-            // Construct the path where the image should be saved using the
-            // pattern package.
-            final path = join(
-              // Store the picture in the temp directory.
-              // Find the temp directory using the `path_provider` plugin.
-              (await getTemporaryDirectory()).path,
-              '${DateTime.now()}.png',
-            );
-
-            // Attempt to take a picture and log where it's been saved.
-            await _controller.takePicture(path);
-            // Load it from my filesystem
-            File imageFile = new File(path);
-
-            // Convert to amazon requirements
-            List imageBytes = imageFile.readAsBytesSync();
-            String base64Image = base64Encode(imageBytes);
-
-            // If the picture was taken, display it on a new screen.
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(imagePath: path, base64Image: base64Image),
-              ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        },
-      ),
-    );
-  }
-}*/
-
 
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatefulWidget {
@@ -241,10 +138,18 @@ class DisplayPictureScreen extends StatefulWidget {
   _DisplayPictureScreenState createState() => _DisplayPictureScreenState();
 }
 
+String _predictionLink = "";
+String _disease = "";
+bool _requesting = false;
+
 class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
-  String _predictionLink = "";
-  String _disease = "";
-  bool _requesting = false;
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _requesting = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,18 +192,17 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                           _requesting = true;
                         });
                         final prediction = await apiRequests.getPrediction(widget.imagePath, widget.base64Image);
-                        print(prediction);
+                        setState(() => _requesting = false);
                         if(prediction['success']) {
                           setState(() {
                             _disease = prediction['disease'];
                             _predictionLink = prediction['image_path'];
                           });
                           print(_disease);
-                          _showMessage('Prediction is ready', _context);
+                          _neverSatisfied(context, prediction['disease']);
 
                         } else {
-                          _showMessage('Could not sign in.\n'
-                              'Is the Google Services file missing?', _context);
+                          _showMessage('Error getting prediction', _context);
                         }
                         setState(() =>
                           _requesting = false
@@ -318,7 +222,8 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                 if (_predictionLink == "")
                   _showMessage("No prediction yet, request prediction", newContext);
                 else
-                  Share.share('Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink', subject: 'Look at my plant disease prediction');
+                  Share.share('Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink',
+                      subject: 'Look at my plant disease prediction');
               },
 
               tooltip: 'Share',
@@ -335,4 +240,41 @@ void _showMessage(String msg, BuildContext context) {
     content: Text(msg),
   );
   Scaffold.of(context).showSnackBar(snackBar);
+}
+
+Future<void> _neverSatisfied(BuildContext context, String prediction) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Share prediction'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Hi, your Prediction is ready!!'),
+              SizedBox(height: 20,),
+              Text('Your prediction is: $prediction'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Yes'),
+            onPressed: () {
+              Share.share('Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink',
+                  subject: 'Look at my plant disease prediction');
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

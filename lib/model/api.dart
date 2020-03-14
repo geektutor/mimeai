@@ -8,7 +8,7 @@ class ApiRequests {
   Future<Map> getPrediction(String url, String base64Image) async {
     // set up POST request arguments
 //    String url = 'http://10.0.2.2:5000/prediction';
-    String url = 'https://e47a9af1.ngrok.io/prediction';
+    String url = 'https://c2cdb0bd.ngrok.io/prediction';
     Map<String, String> headers = {
       "Content-Type": "application/json",
       "Authorization": "secret"
@@ -20,6 +20,8 @@ class ApiRequests {
 
     // make POST request
     Response response = await post(url, headers: headers, body: json.encode(data));
+    print(response);
+    print('response');
     // check the status code for the result
     int statusCode = response.statusCode;
     // this API passes back the id of the new item added to the body
