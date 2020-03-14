@@ -3,13 +3,14 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:mimeai/model/api.dart';
+import 'package:flutter/painting.dart';
+import 'package:mimeai_app/model/api.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
+import 'package:share/share.dart';
 
-String _disease = "";
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -22,7 +23,7 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-        theme: ThemeData.dark(),
+        theme: ThemeData.light(),
         home: Scaffold(
           appBar: AppBar(
             title: Center(
@@ -43,31 +44,79 @@ class HomeScreen extends StatelessWidget {
   final firstCamera;
   HomeScreen({Key key, @required this.firstCamera});
 
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       body: Column(
         children: <Widget>[
+          SizedBox(height: 200,),
           Center(
             child: RaisedButton(
+                color: Colors.lightBlue,
+                textColor: Colors.white,
                 child: Container(
-                  width: 120,
-                  child: Column(
+                  width: 170,
+                  child: Row(
                     children: <Widget>[
-                      Text('Take picture'),
+                      Text('Select leaf picture'),
+                      SizedBox(width: 30,),
                       Icon(Icons.camera)
                     ],
                   ),
                 ),
-                onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) =>  TakePictureScreen(
-                    // Pass the appropriate camera to the TakePictureScreen widget.
-                    camera: firstCamera,
+                onPressed: () async {
+                  var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+                  File imageFile = new File(image.path);
+
+                  // Convert to amazon requirements
+                  List imageBytes = imageFile.readAsBytesSync();
+                  String base64Image = base64Encode(imageBytes);
+
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) =>  DisplayPictureScreen(imagePath: image.path, base64Image: base64Image)
+                  ));
+                }),
+          ),
+          Center(
+            child: RaisedButton(
+                color: Colors.lightBlue,
+                textColor: Colors.white,
+                child: Container(
+                  width: 170,
+                  child: Row(
+                    children: <Widget>[
+                      Text('Take leaf picture'),
+                      SizedBox(width: 40,),
+                      Icon(Icons.add_a_photo)
+                    ],
                   ),
-                ));
-            }),
+                ),
+                onPressed: () async {
+                  /*Navigator.push(context, MaterialPageRoute(
+                    builder: (context) =>  PickImage(
+                      // Pass the appropriate camera to the TakePictureScreen widget.
+
+                    ),
+                  ));*/
+                  var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+                  File imageFile = new File(image.path);
+
+                  // Convert to amazon requirements
+                  List imageBytes = imageFile.readAsBytesSync();
+                  String base64Image = base64Encode(imageBytes);
+
+                  // If the picture was taken, display it on a new screen.
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DisplayPictureScreen(imagePath: image.path, base64Image: base64Image),
+                    ),
+                  );
+                }),
           )
         ],
       ),
@@ -77,7 +126,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 
-// A screen that allows users to take a picture using a given camera.
+/*// A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
 
@@ -179,7 +228,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ),
     );
   }
-}
+}*/
 
 
 // A widget that displays the picture taken by the user.
@@ -193,8 +242,14 @@ class DisplayPictureScreen extends StatefulWidget {
 }
 
 class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
+  String _predictionLink = "";
+  String _disease = "";
+  bool _requesting = false;
+
   @override
   Widget build(BuildContext context) {
+
+
 
     return Scaffold(
         appBar: AppBar(title: Text('Get Prediction')),
@@ -208,29 +263,46 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
         ),
       ),*/
         body: Builder(builder: (_context) =>
+
             Column(
               children: <Widget>[
+                SizedBox(height: 50,),
                 Container(
+                  padding: EdgeInsets.fromLTRB(6, 0, 6, 20.0),
                   alignment: Alignment.center,
-                  child: Image.file(File(widget.imagePath)),
+                  child: SizedBox(
+                    height: 200,
+                    child: Image.file(File(widget.imagePath)),
+                  )
                 ),
-                Text('Disease:  $_disease'),
-                RaisedButton(
+                Text('Disease Prediction:  $_disease'),
+                SizedBox(height: 20,),
+                _requesting ? CircularProgressIndicator() : RaisedButton(
+                    color: Colors.lightBlue,
+                    textColor: Colors.white,
                     onPressed: () async {
                       try {
                         ApiRequests apiRequests = new ApiRequests();
+                        setState(() {
+                          _requesting = true;
+                        });
                         final prediction = await apiRequests.getPrediction(widget.imagePath, widget.base64Image);
-
+                        print(prediction);
                         if(prediction['success']) {
                           setState(() {
                             _disease = prediction['disease'];
+                            _predictionLink = prediction['image_path'];
                           });
+                          print(_disease);
                           _showMessage('Prediction is ready', _context);
 
                         } else {
                           _showMessage('Could not sign in.\n'
                               'Is the Google Services file missing?', _context);
                         }
+                        setState(() =>
+                          _requesting = false
+                        );
                       } on Exception catch (error) {
                         print(error);
                       }
@@ -238,8 +310,21 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     child: Text('Request Prediction')
                 )
               ],
-            ),
+            )
+        ),
+      floatingActionButton: Builder(
+          builder: (newContext) =>  FloatingActionButton(
+              onPressed: () async {
+                if (_predictionLink == "")
+                  _showMessage("No prediction yet, request prediction", newContext);
+                else
+                  Share.share('Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink', subject: 'Look at my plant disease prediction');
+              },
+
+              tooltip: 'Share',
+              child: Icon(Icons.share),
         )
+      )
     );
   }
 }

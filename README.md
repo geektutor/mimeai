@@ -1,6 +1,6 @@
-# mimeai
+# mimeai_app
 
-Crop recognition AI
+A new Flutter application.
 
 ## Getting Started
 
