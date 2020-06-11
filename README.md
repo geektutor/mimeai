@@ -1,16 +1,18 @@
-# mimeai_app
+# MIMEAI
 
-A new Flutter application.
+Plant disease recognition mobile application built using flutter to help farmers know exactly what disease their plant might be suffering from. 
+
+Currently the AI only recognizes 10 diseases in tomato plant, **lots of work still left to do**
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+- get repo `git clone https://github.com/Tobenna-KA/mimeai.git`
+- enter project director `cd mimeai`
+- check flutter environment`flutter doctor`
+- run app `flutter run`
 
-A few resources to get you started if this is your first Flutter project:
+The application separates the AI Model in a Python API located at [MIMEAI API](https://github.com/Tobenna-KA/mimeai-api)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Directives to the server you are running the API on can be set at [link](https://github.com/Tobenna-KA/mimeai/blob/70eabfc0c31abb1a78c5f25412224d7ef052fa38/lib/model/api.dart#L11)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**As I continue to find time, more features will be added**
