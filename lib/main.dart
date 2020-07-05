@@ -10,7 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'package:share/share.dart';
-
+import 'nmain.dart';
+import 'camera.dart';
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -32,10 +33,11 @@ Future<void> main() async {
           ),
           body: Container(
             margin: EdgeInsets.only(top: 2),
-            child: HomeScreen(firstCamera: firstCamera,),
+            child: HomeScreen(
+              firstCamera: firstCamera,
+            ),
           ),
-        )
-    ),
+        )),
   );
 }
 
@@ -44,14 +46,45 @@ class HomeScreen extends StatelessWidget {
   final firstCamera;
   HomeScreen({Key key, @required this.firstCamera});
 
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       body: Column(
         children: <Widget>[
-          SizedBox(height: 200,),
+          SizedBox(
+            height: 200,
+          ),
+          Center(
+            child: RaisedButton(
+              color: Colors.lightBlue,
+              textColor: Colors.white,
+              child: Text('Go to Geek Main'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AppBarTop()),
+                );
+              },
+            ),
+          ),
+          Center(
+            child: RaisedButton(
+              color: Colors.lightBlue,
+              textColor: Colors.white,
+              child: Text('Go to Geek Snap'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TakePictureGeek(
+                      camera: firstCamera,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           Center(
             child: RaisedButton(
                 color: Colors.lightBlue,
@@ -61,14 +94,16 @@ class HomeScreen extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Text('Select leaf picture'),
-                      SizedBox(width: 30,),
+                      SizedBox(
+                        width: 30,
+                      ),
                       Icon(Icons.camera)
                     ],
                   ),
                 ),
                 onPressed: () async {
-
-                  var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+                  var image =
+                      await ImagePicker.pickImage(source: ImageSource.gallery);
 
                   File imageFile = new File(image.path);
 
@@ -76,9 +111,12 @@ class HomeScreen extends StatelessWidget {
                   List imageBytes = imageFile.readAsBytesSync();
                   String base64Image = base64Encode(imageBytes);
 
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) =>  DisplayPictureScreen(imagePath: image.path, base64Image: base64Image)
-                  ));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DisplayPictureScreen(
+                              imagePath: image.path,
+                              base64Image: base64Image)));
                 }),
           ),
           Center(
@@ -90,7 +128,9 @@ class HomeScreen extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Text('Take leaf picture'),
-                      SizedBox(width: 40,),
+                      SizedBox(
+                        width: 40,
+                      ),
                       Icon(Icons.add_a_photo)
                     ],
                   ),
@@ -102,7 +142,8 @@ class HomeScreen extends StatelessWidget {
 
                     ),
                   ));*/
-                  var image = await ImagePicker.pickImage(source: ImageSource.camera);
+                  var image =
+                      await ImagePicker.pickImage(source: ImageSource.camera);
 
                   File imageFile = new File(image.path);
 
@@ -114,7 +155,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DisplayPictureScreen(imagePath: image.path, base64Image: base64Image),
+                      builder: (context) => DisplayPictureScreen(
+                          imagePath: image.path, base64Image: base64Image),
                     ),
                   );
                 }),
@@ -123,16 +165,14 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
 
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
   final String base64Image;
-  const DisplayPictureScreen({Key key, this.imagePath, this.base64Image}) : super(key: key);
+  const DisplayPictureScreen({Key key, this.imagePath, this.base64Image})
+      : super(key: key);
 
   @override
   _DisplayPictureScreenState createState() => _DisplayPictureScreenState();
@@ -143,8 +183,6 @@ String _disease = "";
 bool _requesting = false;
 
 class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
-
-
   @override
   void dispose() {
     super.dispose();
@@ -153,9 +191,6 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
         appBar: AppBar(title: Text('Get Prediction')),
         // The image is stored as a file on the device. Use the `Image.file`
@@ -167,70 +202,72 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
             child: Text('Go back')
         ),
       ),*/
-        body: Builder(builder: (_context) =>
-
-            Column(
-              children: <Widget>[
-                SizedBox(height: 50,),
-                Container(
-                  padding: EdgeInsets.fromLTRB(6, 0, 6, 20.0),
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    height: 200,
-                    child: Image.file(File(widget.imagePath)),
-                  )
-                ),
-                Text('Disease Prediction:  $_disease'),
-                SizedBox(height: 20,),
-                _requesting ? CircularProgressIndicator() : RaisedButton(
-                    color: Colors.lightBlue,
-                    textColor: Colors.white,
-                    onPressed: () async {
-                      try {
-                        ApiRequests apiRequests = new ApiRequests();
-                        setState(() {
-                          _requesting = true;
-                        });
-                        final prediction = await apiRequests.getPrediction(widget.imagePath, widget.base64Image);
-                        setState(() => _requesting = false);
-                        if(prediction['success']) {
-                          setState(() {
-                            _disease = prediction['disease'];
-                            _predictionLink = prediction['image_path'];
-                          });
-                          print(_disease);
-                          _neverSatisfied(context, prediction['disease']);
-
-                        } else {
-                          _showMessage('Error getting prediction', _context);
-                        }
-                        setState(() =>
-                          _requesting = false
-                        );
-                      } on Exception catch (error) {
-                        print(error);
-                      }
-                    },
-                    child: Text('Request Prediction')
-                )
-              ],
-            )
-        ),
-      floatingActionButton: Builder(
-          builder: (newContext) =>  FloatingActionButton(
-              onPressed: () async {
-                if (_predictionLink == "")
-                  _showMessage("No prediction yet, request prediction", newContext);
-                else
-                  Share.share('Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink',
-                      subject: 'Look at my plant disease prediction');
-              },
-
-              tooltip: 'Share',
-              child: Icon(Icons.share),
-        )
-      )
-    );
+        body: Builder(
+            builder: (_context) => Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Container(
+                        padding: EdgeInsets.fromLTRB(6, 0, 6, 20.0),
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 200,
+                          child: Image.file(File(widget.imagePath)),
+                        )),
+                    Text('Disease Prediction:  $_disease'),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _requesting
+                        ? CircularProgressIndicator()
+                        : RaisedButton(
+                            color: Colors.lightBlue,
+                            textColor: Colors.white,
+                            onPressed: () async {
+                              try {
+                                ApiRequests apiRequests = new ApiRequests();
+                                setState(() {
+                                  _requesting = true;
+                                });
+                                final prediction =
+                                    await apiRequests.getPrediction(
+                                        widget.imagePath, widget.base64Image);
+                                setState(() => _requesting = false);
+                                if (prediction['success']) {
+                                  setState(() {
+                                    _disease = prediction['disease'];
+                                    _predictionLink = prediction['image_path'];
+                                  });
+                                  print(_disease);
+                                  _neverSatisfied(
+                                      context, prediction['disease']);
+                                } else {
+                                  _showMessage(
+                                      'Error getting prediction', _context);
+                                }
+                                setState(() => _requesting = false);
+                              } on Exception catch (error) {
+                                print(error);
+                              }
+                            },
+                            child: Text('Request Prediction'))
+                  ],
+                )),
+        floatingActionButton: Builder(
+            builder: (newContext) => FloatingActionButton(
+                  onPressed: () async {
+                    if (_predictionLink == "")
+                      _showMessage(
+                          "No prediction yet, request prediction", newContext);
+                    else
+                      Share.share(
+                          'Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink',
+                          subject: 'Look at my plant disease prediction');
+                  },
+                  tooltip: 'Share',
+                  child: Icon(Icons.share),
+                )));
   }
 }
 
@@ -253,7 +290,9 @@ Future<void> _neverSatisfied(BuildContext context, String prediction) async {
           child: ListBody(
             children: <Widget>[
               Text('Hi, your Prediction is ready!!'),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Text('Your prediction is: $prediction'),
             ],
           ),
@@ -262,7 +301,8 @@ Future<void> _neverSatisfied(BuildContext context, String prediction) async {
           FlatButton(
             child: Text('Yes'),
             onPressed: () {
-              Share.share('Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink',
+              Share.share(
+                  'Hi, please I need pesticide for $_disease, here is a link to the image $_predictionLink',
                   subject: 'Look at my plant disease prediction');
               Navigator.of(context).pop();
             },
