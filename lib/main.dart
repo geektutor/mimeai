@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:mimeai_app/detected.dart';
+import 'package:mimeai_app/healthy.dart';
 import 'package:mimeai_app/services/api.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
@@ -54,6 +56,32 @@ class HomeScreen extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             height: 200,
+          ),
+          Center(
+            child: RaisedButton(
+              color: Colors.lightBlue,
+              textColor: Colors.white,
+              child: Text('Go to OG Screen 1'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Detected()),
+                );
+              },
+            ),
+          ),
+          Center(
+            child: RaisedButton(
+              color: Colors.lightBlue,
+              textColor: Colors.white,
+              child: Text('Go to OG Screen 2'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Healthy()),
+                );
+              },
+            ),
           ),
           Center(
             child: RaisedButton(
