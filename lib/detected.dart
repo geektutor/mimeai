@@ -105,7 +105,6 @@ class Detected extends StatelessWidget {
               Container(
                 height: screenSize.height * 0.19,
                 padding: EdgeInsets.symmetric(horizontal: 32),
-                color: Color(0xFFE6E2DF),
                 child: Container(
                   height: 50,
                   margin: EdgeInsets.only(

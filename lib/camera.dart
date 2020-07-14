@@ -22,7 +22,6 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-      theme: ThemeData.dark(),
       home: TakePictureGeek(
         // Pass the appropriate camera to the TakePictureScreen widget.
         camera: firstCamera,
@@ -194,8 +193,7 @@ class TakePictureScreenState extends State<TakePictureGeek> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  Analyzing(),
+                              builder: (context) => Analyzing(),
                             ),
                           );
                         } catch (e) {

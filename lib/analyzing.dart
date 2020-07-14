@@ -25,8 +25,10 @@ class Analyzing extends StatelessWidget {
                 width: screenSize.width,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
+                  color: Colors.red,
                   image: DecorationImage(
-                      image: AssetImage('assets/leafphoto.png')),
+                    image: AssetImage('assets/leafphoto.png'),
+                  ),
                 ),
               ),
               SizedBox(
@@ -64,25 +66,26 @@ class Analyzing extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                    text: '${value * 100}%',
-                    style: GoogleFonts.manrope(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                    children: [
-                      TextSpan(
-                          text: ' complete',
-                          style: GoogleFonts.manrope(
-                              fontWeight: FontWeight.normal))
-                    ]),
+                  text: '${value * 100}%',
+                  style: GoogleFonts.manrope(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: ' complete',
+                      style: GoogleFonts.manrope(fontWeight: FontWeight.normal),
+                    )
+                  ],
+                ),
               ),
               SizedBox(
-                height: 48,
+                height: 28,
               ),
               ErrorContainer(),
               SizedBox(
-                height: 48,
+                height: 28,
               ),
             ],
           ),

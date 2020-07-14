@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:google_fonts/google_fonts.dart';
+import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:mimeai_app/analyzing.dart';
 import 'package:mimeai_app/detected.dart';
 import 'package:mimeai_app/healthy.dart';
@@ -27,23 +29,11 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-        theme: ThemeData.light(),
-        home: AppBarTop()),
+      home: HomeScreen(),
+    ),
   );
 }
-//Scaffold(
-//appBar: AppBar(
-//title: Center(
-//child: Text('Mimeai'),
-//),
-//),
-//body: Container(
-//margin: EdgeInsets.only(top: 2),
-//child: HomeScreen(
-//firstCamera: firstCamera,
-//),
-//),
-//)
+
 class HomeScreen extends StatelessWidget {
   // Obtain a list of the available cameras on the device.
   final firstCamera;
@@ -53,142 +43,67 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      backgroundColor: Color(0xFFFFF7F1),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SizedBox(
-            height: 200,
-          ),
+          SizedBox(height: 30),
           Center(
-            child: RaisedButton(
-              color: Colors.lightBlue,
-              textColor: Colors.white,
-              child: Text('Go to OG Screen 1'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Analyzing()),
-                );
-              },
-            ),
-          ),
-          Center(
-            child: RaisedButton(
-              color: Colors.lightBlue,
-              textColor: Colors.white,
-              child: Text('Go to OG Screen 2'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Detected()),
-                );
-              },
-            ),
-          ),
-          Center(
-            child: RaisedButton(
-              color: Colors.lightBlue,
-              textColor: Colors.white,
-              child: Text('Go to Geek Main'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AppBarTop()),
-                );
-              },
-            ),
-          ),
-          Center(
-            child: RaisedButton(
-              color: Colors.lightBlue,
-              textColor: Colors.white,
-              child: Text('Go to Geek Snap'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TakePictureGeek(
-                      camera: firstCamera,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Center(
-            child: RaisedButton(
-                color: Colors.lightBlue,
-                textColor: Colors.white,
-                child: Container(
-                  width: 170,
-                  child: Row(
-                    children: <Widget>[
-                      Text('Select leaf picture'),
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Icon(Icons.camera)
-                    ],
-                  ),
+            child: Container(
+              width: 320,
+              height: 204,
+              child: Text(
+                'mimeai can be used to identify diseases in plants  To get started take a picture of the leaf of the affected plant ',
+                style: GoogleFonts.nunito(
+                  textStyle: GoogleFonts.manrope(fontSize: 24),
+                  letterSpacing: 0.03,
                 ),
-                onPressed: () async {
-                  var image =
-                      await ImagePicker.pickImage(source: ImageSource.gallery);
-
-                  File imageFile = new File(image.path);
-
-                  // Convert to amazon requirements
-                  List imageBytes = imageFile.readAsBytesSync();
-                  String base64Image = base64Encode(imageBytes);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DisplayPictureScreen(
-                              imagePath: image.path,
-                              base64Image: base64Image)));
-                }),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
-          Center(
-            child: RaisedButton(
-                color: Colors.lightBlue,
-                textColor: Colors.white,
-                child: Container(
-                  width: 170,
-                  child: Row(
-                    children: <Widget>[
-                      Text('Take leaf picture'),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Icon(Icons.add_a_photo)
-                    ],
-                  ),
-                ),
-                onPressed: () async {
-                  /*Navigator.push(context, MaterialPageRoute(
-                    builder: (context) =>  PickImage(
-                      // Pass the appropriate camera to the TakePictureScreen widget.
-
-                    ),
-                  ));*/
-                  var image =
-                      await ImagePicker.pickImage(source: ImageSource.camera);
-
-                  File imageFile = new File(image.path);
-
-                  // Convert to amazon requirements
-                  List imageBytes = imageFile.readAsBytesSync();
-                  String base64Image = base64Encode(imageBytes);
-
-                  // If the picture was taken, display it on a new screen.
-                  Navigator.push(
+          SizedBox(height: 20),
+          Image.asset(
+            'assets/Line1.png',
+          ),
+          SizedBox(height: 40),
+          Container(
+            width: 70,
+            height: 70,
+            child: FloatingActionButton(
+              backgroundColor: Color(0xFF569557),
+              onPressed: () {
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DisplayPictureScreen(
-                          imagePath: image.path, base64Image: base64Image),
-                    ),
-                  );
-                }),
+                      builder: (context) => TakePictureGeek(
+                        camera: firstCamera,
+                      ),
+                    ));
+              },
+              child: Icon(
+                FeatherIcons.camera,
+                size: 35,
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          Text('or'),
+          SizedBox(height: 10),
+          RaisedButton(
+            textColor: Color(0xFF437344),
+            color: Color.fromRGBO(223, 237, 223, 0.5),
+            elevation: 0,
+            child: Text(
+              'Upload Picture',
+              style: GoogleFonts.manrope(fontSize: 18),
+            ),
+            padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            onPressed: () {},
           )
         ],
       ),
