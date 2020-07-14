@@ -29,7 +29,9 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-      home: HomeScreen(),
+      home: HomeScreen(
+        firstCamera: firstCamera,
+      ),
     ),
   );
 }
@@ -37,6 +39,7 @@ Future<void> main() async {
 class HomeScreen extends StatelessWidget {
   // Obtain a list of the available cameras on the device.
   final firstCamera;
+
   HomeScreen({Key key, @required this.firstCamera});
 
   @override
@@ -115,6 +118,7 @@ class HomeScreen extends StatelessWidget {
 class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
   final String base64Image;
+
   const DisplayPictureScreen({Key key, this.imagePath, this.base64Image})
       : super(key: key);
 

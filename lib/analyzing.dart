@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mimeai_app/widgets.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'dart:io';
 
 class Analyzing extends StatelessWidget {
+  Analyzing({this.imagePath});
+  final imagePath;
   @override
   Widget build(BuildContext context) {
     final value = 0.5;
@@ -23,14 +25,23 @@ class Analyzing extends StatelessWidget {
               Container(
                 height: 300,
                 width: screenSize.width,
-                decoration: BoxDecoration(
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.red,
-                  image: DecorationImage(
-                    image: AssetImage('assets/leafphoto.png'),
-                  ),
-                ),
+                    child: Image.file(File(imagePath),
+                    fit: BoxFit.fill,),),
               ),
+//              Container(
+//                height: 300,
+//                width: screenSize.width,
+//                decoration: BoxDecoration(
+//                  borderRadius: BorderRadius.circular(20),
+//                  color: Colors.red,
+//                  image: DecorationImage(
+//                    image: AssetImage(imagePath??'assets/leafphoto.png'),
+//                    fit: BoxFit.fill,
+//                  ),
+//                ),
+//              ),
               SizedBox(
                 height: 24,
               ),

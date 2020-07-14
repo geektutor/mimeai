@@ -110,12 +110,15 @@ Widget mimeai = RichText(
 );
 
 class ErrorContainer extends StatelessWidget {
+  ErrorContainer({this.errorText});
+
+  final String errorText;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      height: 70,
       width: screenSize.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
