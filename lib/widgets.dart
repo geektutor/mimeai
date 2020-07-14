@@ -90,3 +90,45 @@ class ButtonRow extends StatelessWidget {
     );
   }
 }
+
+Widget mimeai = RichText(
+  text: TextSpan(
+      text: 'mime',
+      style: GoogleFonts.poppins(
+        color: Color(0xFF569557),
+        fontSize: 21,
+        fontWeight: FontWeight.bold,
+      ),
+      children: [
+        TextSpan(
+            style: GoogleFonts.poppins(
+              color: Color(0xFF437344),
+              fontWeight: FontWeight.bold,
+            ),
+            text: 'ai')
+      ]),
+);
+
+class ErrorContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      height: 70,
+      width: screenSize.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Color(0xFF816C61),
+      ),
+      child: Text(
+        'Network error, please check your internet  connection.',
+        style: GoogleFonts.manrope(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:mimeai_app/analyzing.dart';
 import 'package:mimeai_app/detected.dart';
 import 'package:mimeai_app/healthy.dart';
 import 'package:mimeai_app/services/api.dart';
@@ -65,7 +66,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Detected()),
+                  MaterialPageRoute(builder: (context) => Analyzing()),
                 );
               },
             ),
@@ -78,7 +79,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Healthy()),
+                  MaterialPageRoute(builder: (context) => Detected()),
                 );
               },
             ),
