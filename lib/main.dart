@@ -28,22 +28,22 @@ Future<void> main() async {
   runApp(
     MaterialApp(
         theme: ThemeData.light(),
-        home: Scaffold(
-          appBar: AppBar(
-            title: Center(
-              child: Text('Mimeai'),
-            ),
-          ),
-          body: Container(
-            margin: EdgeInsets.only(top: 2),
-            child: HomeScreen(
-              firstCamera: firstCamera,
-            ),
-          ),
-        )),
+        home: AppBarTop()),
   );
 }
-
+//Scaffold(
+//appBar: AppBar(
+//title: Center(
+//child: Text('Mimeai'),
+//),
+//),
+//body: Container(
+//margin: EdgeInsets.only(top: 2),
+//child: HomeScreen(
+//firstCamera: firstCamera,
+//),
+//),
+//)
 class HomeScreen extends StatelessWidget {
   // Obtain a list of the available cameras on the device.
   final firstCamera;

@@ -35,6 +35,7 @@ dependencies:
   flutter_feather_icons: ^1.0.3
 
 dev_dependencies:
+  flutter_native_splash: ^0.1.9
   flutter_test:
     sdk: flutter
 
@@ -80,3 +81,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  image: assets/mimeai.png
+  color: "FFF7F1"
