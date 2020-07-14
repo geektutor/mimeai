@@ -21,7 +21,7 @@ class AppBarTop extends StatelessWidget {
               child: Text(
                 'mimeai can be used to identify diseases in plants  To get started take a picture of the leaf of the affected plant ',
                 style: GoogleFonts.nunito(
-                  textStyle: TextStyle(fontSize: 24),
+                  textStyle: GoogleFonts.manrope(fontSize: 24),
                   letterSpacing: 0.03,
                 ),
                 textAlign: TextAlign.center,
@@ -54,7 +54,7 @@ class AppBarTop extends StatelessWidget {
             elevation: 0,
             child: Text(
               'Upload Picture',
-              style: TextStyle(fontSize: 18),
+              style: GoogleFonts.manrope(fontSize: 18),
             ),
             padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
             shape: RoundedRectangleBorder(

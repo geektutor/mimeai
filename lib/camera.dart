@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:mimeai_app/analyzing.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
@@ -194,7 +195,7 @@ class TakePictureScreenState extends State<TakePictureGeek> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  DisplayPictureGeek(imagePath: path),
+                                  Analyzing(),
                             ),
                           );
                         } catch (e) {
