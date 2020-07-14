@@ -1,21 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import 'package:mimeai_app/analyzing.dart';
-import 'package:mimeai_app/detected.dart';
-import 'package:mimeai_app/healthy.dart';
 import 'package:mimeai_app/services/api.dart';
-import 'package:path/path.dart' show join;
-import 'package:path_provider/path_provider.dart';
-import 'dart:convert';
-import 'package:image_picker/image_picker.dart';
 import 'package:share/share.dart';
-import 'nmain.dart';
 import 'camera.dart';
 
 Future<void> main() async {
