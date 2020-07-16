@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:mimeai_app/analyzing.dart';
+import 'package:mimeai_app/widgets.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
@@ -72,6 +73,7 @@ class TakePictureScreenState extends State<TakePictureGeek> {
 
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
     return Scaffold(
       // Wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner
@@ -113,33 +115,31 @@ class TakePictureScreenState extends State<TakePictureGeek> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 300,
-                child: Container(
-                    height: 300,
-                    width: 300,
-                    child: Column(
-                      children: <Widget>[
-                        FutureBuilder<void>(
-                          future: _initializeControllerFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              // If the Future is complete, display the preview.
-                              return Container(
-                                width: 300,
-                                height: 300,
-                                child: CameraPreview(_controller),
-                              );
-                            } else {
-                              // Otherwise, display a loading indicator.
-                              return Center(child: CircularProgressIndicator());
-                            }
-                          },
-                        ),
-                      ],
-                    )),
-              ),
+              Container(
+//                    height: 300,
+//                    width: 300,
+              padding: EdgeInsets.symmetric(horizontal: 30),
+                   child: Column(
+                     children: <Widget>[
+                       FutureBuilder<void>(
+                         future: _initializeControllerFuture,
+                         builder: (context, snapshot) {
+                           if (snapshot.connectionState ==
+                               ConnectionState.done) {
+                             // If the Future is complete, display the preview.
+                             return Container(
+                               width: screenSize.width,
+                               height: screenSize.width -60,
+                               child: CameraPreview(_controller),
+                             );
+                           } else {
+                             // Otherwise, display a loading indicator.
+                             return Center(child: CircularProgressIndicator());
+                           }
+                         },
+                       ),
+                     ],
+                   )),
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
