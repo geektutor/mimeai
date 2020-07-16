@@ -6,7 +6,9 @@ import 'dart:io';
 
 class Analyzing extends StatelessWidget {
   Analyzing({this.imagePath});
+
   final imagePath;
+
   @override
   Widget build(BuildContext context) {
     final value = 0.5;
@@ -23,12 +25,15 @@ class Analyzing extends StatelessWidget {
                 height: 48,
               ),
               Container(
-                height: 300,
+                height: screenSize.width - 64,
                 width: screenSize.width,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                    child: Image.file(File(imagePath),
-                    fit: BoxFit.fill,),),
+                  child: Image.file(
+                    File(imagePath),
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
 //              Container(
 //                height: 300,
