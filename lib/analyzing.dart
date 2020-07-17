@@ -15,7 +15,6 @@ class Analyzing extends StatelessWidget {
     screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
         child: Container(
           constraints: BoxConstraints.tight(screenSize),
           padding: EdgeInsets.fromLTRB(32, 70, 32, 0),
