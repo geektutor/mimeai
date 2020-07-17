@@ -15,7 +15,9 @@ class Analyzing extends StatelessWidget {
     screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
+        physics: NeverScrollableScrollPhysics(),
+        child: Container(
+          constraints: BoxConstraints.tight(screenSize),
           padding: EdgeInsets.fromLTRB(32, 70, 32, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,14 +26,16 @@ class Analyzing extends StatelessWidget {
               SizedBox(
                 height: 48,
               ),
-              Container(
-                height: screenSize.width - 64,
-                width: screenSize.width,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.file(
-                    File(imagePath),
-                    fit: BoxFit.fill,
+              Flexible(
+                child: Container(
+               //   height: screenSize.width - 64,
+                  width: screenSize.width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.file(
+                      File(imagePath),
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
               ),
