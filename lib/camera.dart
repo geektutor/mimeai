@@ -102,6 +102,8 @@ class TakePictureScreenState extends State<TakePictureGeek> {
             child: Container(
               height: screenSize.height * 0.25,
               width: screenSize.width,
+              constraints:
+                  BoxConstraints.expand(height: 176, width: screenSize.width),
               color: Color.fromRGBO(129, 108, 97, 0.3),
               // color: Colors.grey.withOpacity(0.3),
               child: ClipRect(
@@ -181,25 +183,25 @@ class TakePictureScreenState extends State<TakePictureGeek> {
                             size: 35,
                           ),
                           onPressed: () async {
-// Take the Picture in a try / catch block. If anything goes wrong,
-// catch the error.
+                            // Take the Picture in a try / catch block. If anything goes wrong,
+                            // catch the error.
                             try {
-// Ensure that the camera is initialized.
+                              // Ensure that the camera is initialized.
                               await _initializeControllerFuture;
 
-// Construct the path where the image should be saved using the
-// pattern package.
+                              // Construct the path where the image should be saved using the
+                              // pattern package.
                               final path = join(
-// Store the picture in the temp directory.
-// Find the temp directory using the `path_provider` plugin.
+                                // Store the picture in the temp directory.
+                                // Find the temp directory using the `path_provider` plugin.
                                 (await getTemporaryDirectory()).path,
                                 '${DateTime.now()}.png',
                               );
 
-// Attempt to take a picture and log where it's been saved.
+                              // Attempt to take a picture and log where it's been saved.
                               await _controller.takePicture(path);
 
-// If the picture was taken, display it on a new screen.
+                              // If the picture was taken, display it on a new screen.
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -209,7 +211,7 @@ class TakePictureScreenState extends State<TakePictureGeek> {
                                 ),
                               );
                             } catch (e) {
-// If an error occurs, log the error to the console.
+                              // If an error occurs, log the error to the console.
                               print(e);
                             }
                           },
@@ -238,9 +240,48 @@ class TakePictureScreenState extends State<TakePictureGeek> {
               //color: Colors.grey.withOpacity(0.3),
             ),
           ),
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding:  EdgeInsets.symmetric(horizontal: 20, vertical: screenSize.height * 0.14),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  ChevronRow(top: true,),
+                  ChevronRow(top: false,)
+                ],
+              ),
+            ),
+          )
         ],
       ),
     ));
+  }
+}
+
+class ChevronRow extends StatelessWidget {
+  const ChevronRow({Key key, this.top}) : super(key: key);
+  final bool top;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Transform.rotate(
+          angle: top ? 11 / 14 : -11 / 14,
+          child: Icon(FeatherIcons.chevronLeft,
+          size: 35,
+          color: Colors.white,),
+        ),
+        Transform.rotate(
+          angle: top ? -11 / 14 : 11 / 14,
+          child: Icon(FeatherIcons.chevronRight,
+          color: Colors.white,
+            size: 35,),
+        ),
+      ],
+    );
   }
 }
 
