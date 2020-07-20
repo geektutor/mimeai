@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:mimeai_app/services/api.dart';
@@ -18,13 +19,16 @@ Future<void> main() async {
   // Get a specific camera from the list of available cameras.
   final firstCamera = cameras.first;
 
-  runApp(
-    MaterialApp(
-      home: HomeScreen(
-        firstCamera: firstCamera,
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((context) {
+    runApp(
+      MaterialApp(
+        home: HomeScreen(
+          firstCamera: firstCamera,
+        ),
       ),
-    ),
-  );
+    );
+  });
 }
 
 class HomeScreen extends StatelessWidget {
